@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
 import click
+from os.path import exists
+from sys import exit
+import pickle
 
 
 class todo:
     def __init__(self, priority, text):
-        self.priority = priority
+        self.priority = int(priority)
         self.text = text
 
     def __lt__(self, other):
@@ -19,7 +22,32 @@ class todos:
     def __init__(self):
         self.plan = []
 
+    def __load(self):
+        try:
+            file = open("TODO.pytodo", 'rb')
+        except FileNotFoundError:
+            click.echo("No TODO file. Run pytodo init.")
+            exit(1)
+        obj = pickle.load(file)
+        self.plan = obj.plan
+        file.close()
+
+    def __dump(self):
+        file = open("TODO.pytodo", 'wb')
+        pickle.dump(self, file)
+        file.close()
+
+    def __enter__(self):
+        self.__load()
+        return self
+
+    def __exit__(self, exc_type, ecx_val, exc_tb):
+        self.__dump()
+
     def list(self):
+        if self.plan == []:
+            print('empty')
+            return
         for i, t in enumerate(self.plan, start=1):
             click.echo("[{}]: ".format(i), nl=False)
             if t.priority == 1:
@@ -50,36 +78,38 @@ def pytodo():
 @pytodo.command()
 def init():
     '''Re/Initialize TODO file'''
+    if exists("TODO.pytodo"):
+        click.echo("Reinitializing TODO")
+    else:
+        click.echo("Initializing TODO")
+    file = open("TODO.pytodo", 'wb')
+    pickle.dump(todos(), file)
+    file.close()
 
 
 @pytodo.command()
 def list():
     '''List available TODOs'''
-    print()
+    with todos() as td:
+        td.list()
 
 
 @pytodo.command()
-def add():
+@click.option("-p", "--priority",
+              type=click.Choice(['1', '2', '3', '4', '5']), default='3')
+@click.option("-t", "--text", multiple=True)
+def add(priority, text):
     '''Add TODO to list'''
-    pass
+    with todos() as td:
+        td.add(todo(priority, '\n'.join(text)))
 
 
 @pytodo.command()
-def delete():
+@click.argument('num', type=int, required=True)
+def delete(num):
     '''Delete TODO from list'''
-    pass
-
-
-@pytodo.command()
-def change():
-    '''Changes content of TODO'''
-    pass
-
-
-@pytodo.command()
-def show():
-    '''Show full TODO description'''
-    pass
+    with todos() as td:
+        td.delete(num)
 
 
 if __name__ == "__main__":
