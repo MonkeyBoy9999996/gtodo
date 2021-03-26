@@ -24,16 +24,16 @@ class todos:
 
     def __load(self):
         try:
-            file = open("TODO.pytodo", 'rb')
+            file = open("TODO.gtodo", 'rb')
         except FileNotFoundError:
-            click.echo("No TODO file. Run pytodo init.")
+            click.echo("No TODO file. Run gtodo init.")
             exit(1)
         obj = pickle.load(file)
         self.plan = obj.plan
         file.close()
 
     def __dump(self):
-        file = open("TODO.pytodo", 'wb')
+        file = open("TODO.gtodo", 'wb')
         pickle.dump(self, file)
         file.close()
 
@@ -70,31 +70,31 @@ class todos:
 
 
 @click.group()
-def pytodo():
+def gtodo():
     '''CLI tool for TODO keeping'''
     pass
 
 
-@pytodo.command()
+@gtodo.command()
 def init():
     '''Re/Initialize TODO file'''
-    if exists("TODO.pytodo"):
+    if exists("TODO.gtodo"):
         click.echo("Reinitializing TODO")
     else:
         click.echo("Initializing TODO")
-    file = open("TODO.pytodo", 'wb')
+    file = open("TODO.gtodo", 'wb')
     pickle.dump(todos(), file)
     file.close()
 
 
-@pytodo.command()
+@gtodo.command()
 def list():
     '''List available TODOs'''
     with todos() as td:
         td.list()
 
 
-@pytodo.command()
+@gtodo.command()
 @click.option("-p", "--priority",
               type=click.Choice(['1', '2', '3', '4', '5']), default='3')
 @click.option("-t", "--text", multiple=True)
@@ -104,7 +104,7 @@ def add(priority, text):
         td.add(todo(priority, '\n'.join(text)))
 
 
-@pytodo.command()
+@gtodo.command()
 @click.argument('num', type=int, required=True)
 def delete(num):
     '''Delete TODO from list'''

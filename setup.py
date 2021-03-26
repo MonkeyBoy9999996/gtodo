@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name="pytodo",
+setup(name="gtodo",
       version='0.1',
       description='Simple note taking CLI app',
       long_description=open('README.md').read(),
@@ -11,5 +11,5 @@ setup(name="pytodo",
       install_requires=['Click', ],
       entry_points='''
         [console_scripts]
-        pytodo=main:pytodo
+        gtodo=main:gtodo
       ''')
