@@ -110,7 +110,3 @@ def delete(num):
     '''Delete TODO from list'''
     with todos() as td:
         td.delete(num)
-
-
-if __name__ == "__main__":
-    pytodo()
