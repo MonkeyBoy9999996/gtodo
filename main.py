@@ -96,8 +96,9 @@ def list():
 
 @gtodo.command()
 @click.option("-p", "--priority",
-              type=click.Choice(['1', '2', '3', '4', '5']), default='3')
-@click.option("-t", "--text", multiple=True)
+              type=click.Choice(['1', '2', '3', '4', '5']), default='3',
+              help="Priority of TODO (1=HIGHEST)", show_default=True)
+@click.option("-t", "--text", multiple=True, help="Text of TODO")
 def add(priority, text):
     '''Add TODO to list'''
     with todos() as td:
@@ -118,7 +119,9 @@ def add(priority, text):
 @gtodo.command()
 @click.argument('num', type=int, required=True, nargs=-1)
 def delete(num):
-    '''Delete TODO from list'''
+    '''Delete TODO from list
+
+    NUM... indexes of TODO in list'''
     with todos() as td:
         for idx in num:
             try:
