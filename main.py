@@ -106,18 +106,22 @@ def add(priority, text):
             if text is None:
                 click.echo("Abort")
             else:
-                text = text.split("\n# Write your TODO", 1)[1]
+                text = text.split("\n# Write your TODO", 1)[0]
                 if text == "\n":
                     click.echo("Abort")
                 else:
-                    td.add(todo(priority, text.rstrip()))
+                    td.add(todo(priority, text))
         else:
             td.add(todo(priority, '\n'.join(text)))
 
 
 @gtodo.command()
-@click.argument('num', type=int, required=True)
+@click.argument('num', type=int, required=True, nargs=-1)
 def delete(num):
     '''Delete TODO from list'''
     with todos() as td:
-        td.delete(num)
+        for idx in num:
+            try:
+                td.delete(idx)
+            except IndexError:
+                click.echo(str(idx) + " is invalid todo")

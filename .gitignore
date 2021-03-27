@@ -2,3 +2,4 @@ __pycache__
 dist/
 gtodo.egg-info
 .gitignore
+TODO.gtodo
