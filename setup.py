@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name="gtodo",
-      version='0.1',
+      version='0.2',
       description='Simple note taking CLI app',
       long_description=open('README.md').read(),
       author='Samuel Ján Mucha',
