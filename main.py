@@ -101,7 +101,18 @@ def list():
 def add(priority, text):
     '''Add TODO to list'''
     with todos() as td:
-        td.add(todo(priority, '\n'.join(text)))
+        if text == ():
+            text = click.edit("\n# Write your TODO")
+            if text is None:
+                click.echo("Abort")
+            else:
+                text = text.split("\n# Write your TODO", 1)[1]
+                if text == "\n":
+                    click.echo("Abort")
+                else:
+                    td.add(todo(priority, text.rstrip()))
+        else:
+            td.add(todo(priority, '\n'.join(text)))
 
 
 @gtodo.command()
