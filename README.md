@@ -11,7 +11,7 @@ pip install gtodo
 ```
 ## Usage
 
-Refer to help page `gtodo --help.
+Refer to help page `gtodo --help`
 
 ## Contributing
 
