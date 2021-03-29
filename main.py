@@ -68,6 +68,14 @@ class todos:
     def delete(self, index):
         self.plan.pop(index - 1)
 
+    def change(self, index, text, priority):
+        if text is not None:
+            self.plan[index - 1].text = '\n'.join(text)
+        if priority != ():
+            self.plan[index - 1].priority = int(priority)
+        if text is not None or priority != ():
+            self.plan.sort()
+
 
 @click.group()
 def gtodo():
@@ -127,4 +135,21 @@ def delete(num):
             try:
                 td.delete(idx)
             except IndexError:
-                click.echo(str(idx) + " is invalid todo")
+                click.echo(str(idx) + " is invalid TODO")
+
+
+@gtodo.command()
+@click.option('-p', '--priority', type=click.Choice(['1', '2', '3', '4', '5']),
+              help="Changes the priority of TODO")
+@click.option('-t', '--text', multiple=True, help="Change the text of TODO")
+@click.argument('num', type=int, required=True)
+def change(priority, text, num):
+    '''Changes the properties of TODO
+
+    NUM    index of TODO in list
+    '''
+    with todos() as td:
+        try:
+            td.change(num, text, priority)
+        except IndexError:
+            click.echo(str(num) + " is invalid TODO")
